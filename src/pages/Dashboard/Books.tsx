@@ -1,21 +1,28 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
-const booksData = [
-  { id: 1, title: "The Great Gatsby", author: "F. Scott Fitzgerald", category: "Fiction", price: "$15.99", stock: 45 },
-  { id: 2, title: "Educated", author: "Tara Westover", category: "Non-Fiction", price: "$14.99", stock: 32 },
-  { id: 3, title: "Atomic Habits", author: "James Clear", category: "Self-Help", price: "$18.99", stock: 67 },
-  { id: 4, title: "The Psychology of Money", author: "Morgan Housel", category: "Finance", price: "$19.99", stock: 28 },
-  { id: 5, title: "The Silent Patient", author: "Alex Michaelides", category: "Thriller", price: "$16.99", stock: 53 },
-  { id: 6, title: "Dune", author: "Frank Herbert", category: "Sci-Fi", price: "$13.99", stock: 41 },
-];
+import AddBookDialog, { BookData } from '@/components/books/AddBookDialog';
+import { toast } from '@/hooks/use-toast';
 
 const BooksPage: React.FC = () => {
+  const [isAddBookDialogOpen, setIsAddBookDialogOpen] = useState(false);
+  const [books, setBooks] = useState<BookData[]>([
+    { id: 1, title: "The Great Gatsby", author: "F. Scott Fitzgerald", category: "Fiction", price: "$15.99", stock: 45 },
+    { id: 2, title: "Educated", author: "Tara Westover", category: "Non-Fiction", price: "$14.99", stock: 32 },
+    { id: 3, title: "Atomic Habits", author: "James Clear", category: "Self-Help", price: "$18.99", stock: 67 },
+    { id: 4, title: "The Psychology of Money", author: "Morgan Housel", category: "Finance", price: "$19.99", stock: 28 },
+    { id: 5, title: "The Silent Patient", author: "Alex Michaelides", category: "Thriller", price: "$16.99", stock: 53 },
+    { id: 6, title: "Dune", author: "Frank Herbert", category: "Sci-Fi", price: "$13.99", stock: 41 },
+  ]);
+
+  const handleAddBook = (newBook: BookData) => {
+    setBooks([...books, newBook]);
+  };
+
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between mb-8">
@@ -23,11 +30,20 @@ const BooksPage: React.FC = () => {
           <h1 className="text-2xl font-bold">Manage Books</h1>
           <p className="text-muted-foreground">Add, edit, and manage your book inventory</p>
         </div>
-        <Button className="bg-black text-white hover:bg-gray-800">
+        <Button 
+          className="bg-black text-white hover:bg-gray-800"
+          onClick={() => setIsAddBookDialogOpen(true)}
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add New Book
         </Button>
       </div>
+
+      <AddBookDialog 
+        open={isAddBookDialogOpen} 
+        onOpenChange={setIsAddBookDialogOpen}
+        onAddBook={handleAddBook}
+      />
 
       <Card>
         <Tabs defaultValue="all">
@@ -54,7 +70,7 @@ const BooksPage: React.FC = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {booksData.map((book) => (
+                    {books.map((book) => (
                       <TableRow key={book.id}>
                         <TableCell className="font-medium">{book.title}</TableCell>
                         <TableCell>{book.author}</TableCell>
@@ -94,7 +110,7 @@ const BooksPage: React.FC = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {booksData.filter(book => book.category === "Fiction").map((book) => (
+                    {books.filter(book => book.category === "Fiction").map((book) => (
                       <TableRow key={book.id}>
                         <TableCell className="font-medium">{book.title}</TableCell>
                         <TableCell>{book.author}</TableCell>
@@ -134,7 +150,7 @@ const BooksPage: React.FC = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {booksData.filter(book => book.category === "Non-Fiction").map((book) => (
+                    {books.filter(book => book.category === "Non-Fiction").map((book) => (
                       <TableRow key={book.id}>
                         <TableCell className="font-medium">{book.title}</TableCell>
                         <TableCell>{book.author}</TableCell>
@@ -174,7 +190,7 @@ const BooksPage: React.FC = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {booksData.filter(book => book.category === "Self-Help").map((book) => (
+                    {books.filter(book => book.category === "Self-Help").map((book) => (
                       <TableRow key={book.id}>
                         <TableCell className="font-medium">{book.title}</TableCell>
                         <TableCell>{book.author}</TableCell>
