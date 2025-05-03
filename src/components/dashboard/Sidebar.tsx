@@ -3,7 +3,6 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   Book,
-  User, 
   ShoppingCart, 
   ChartBar, 
   Settings,
@@ -73,9 +72,6 @@ const Sidebar = ({ isCollapsed, toggleSidebar }: SidebarProps) => {
         <div className="flex flex-col gap-2">
           <SidebarLink to="/dashboard" icon={Book}>
             {!isCollapsed && "Books"}
-          </SidebarLink>
-          <SidebarLink to="/dashboard/users" icon={User}>
-            {!isCollapsed && "Users"}
           </SidebarLink>
           <SidebarLink to="/dashboard/orders" icon={ShoppingCart}>
             {!isCollapsed && "Orders"}

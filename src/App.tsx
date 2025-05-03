@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import BooksPage from "./pages/Dashboard/Books";
-import UsersPage from "./pages/Dashboard/Users";
 import OrdersPage from "./pages/Dashboard/Orders";
 import AnalyticsPage from "./pages/Dashboard/Analytics";
 import SettingsPage from "./pages/Dashboard/Settings";
@@ -25,7 +24,6 @@ const App = () => (
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<BooksPage />} />
-            <Route path="users" element={<UsersPage />} />
             <Route path="orders" element={<OrdersPage />} />
             <Route path="analytics" element={<AnalyticsPage />} />
             <Route path="settings" element={<SettingsPage />} />
