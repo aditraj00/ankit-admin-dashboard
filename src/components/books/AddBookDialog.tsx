@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -78,10 +77,14 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({
       ? values.price
       : `$${values.price}`;
 
+    // Create a new book with all required properties
     const newBook: BookData = {
-      id: Math.floor(Math.random() * 10000), // Generate a random ID (in a real app, this would come from the backend)
-      ...values,
+      id: Math.floor(Math.random() * 10000), // Generate a random ID
+      title: values.title,
+      author: values.author,
+      category: values.category,
       price: formattedPrice,
+      stock: values.stock,
     };
 
     onAddBook(newBook);
