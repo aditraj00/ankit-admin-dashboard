@@ -6,10 +6,18 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AddBookDialog, { BookData } from '@/components/books/AddBookDialog';
+import ViewBookDialog from '@/components/books/ViewBookDialog';
+import EditBookDialog from '@/components/books/EditBookDialog';
+import DeleteBookDialog from '@/components/books/DeleteBookDialog';
 import { toast } from '@/hooks/use-toast';
 
 const BooksPage: React.FC = () => {
   const [isAddBookDialogOpen, setIsAddBookDialogOpen] = useState(false);
+  const [isViewBookDialogOpen, setIsViewBookDialogOpen] = useState(false);
+  const [isEditBookDialogOpen, setIsEditBookDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<BookData | null>(null);
+  
   const [books, setBooks] = useState<BookData[]>([
     { id: 1, title: "The Great Gatsby", author: "F. Scott Fitzgerald", category: "Fiction", price: "$15.99", stock: 45 },
     { id: 2, title: "Educated", author: "Tara Westover", category: "Non-Fiction", price: "$14.99", stock: 32 },
@@ -22,6 +30,61 @@ const BooksPage: React.FC = () => {
   const handleAddBook = (newBook: BookData) => {
     setBooks([...books, newBook]);
   };
+
+  const handleViewBook = (book: BookData) => {
+    setSelectedBook(book);
+    setIsViewBookDialogOpen(true);
+  };
+
+  const handleEditBook = (book: BookData) => {
+    setSelectedBook(book);
+    setIsEditBookDialogOpen(true);
+  };
+
+  const handleDeleteBook = (book: BookData) => {
+    setSelectedBook(book);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleUpdateBook = (updatedBook: BookData) => {
+    setBooks(books.map(book => book.id === updatedBook.id ? updatedBook : book));
+  };
+
+  const handleConfirmDelete = (id: number) => {
+    setBooks(books.filter(book => book.id !== id));
+    toast({
+      title: "Book Deleted",
+      description: "The book has been removed from your inventory.",
+    });
+  };
+
+  // Helper function to render book actions
+  const renderBookActions = (book: BookData) => (
+    <div className="flex gap-2">
+      <Button 
+        variant="ghost" 
+        size="sm"
+        onClick={() => handleViewBook(book)}
+      >
+        <Eye className="h-4 w-4" />
+      </Button>
+      <Button 
+        variant="ghost" 
+        size="sm"
+        onClick={() => handleEditBook(book)}
+      >
+        <Edit className="h-4 w-4" />
+      </Button>
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+        onClick={() => handleDeleteBook(book)}
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
+    </div>
+  );
 
   return (
     <div className="animate-fade-in">
@@ -43,6 +106,26 @@ const BooksPage: React.FC = () => {
         open={isAddBookDialogOpen} 
         onOpenChange={setIsAddBookDialogOpen}
         onAddBook={handleAddBook}
+      />
+
+      <ViewBookDialog
+        open={isViewBookDialogOpen}
+        onOpenChange={setIsViewBookDialogOpen}
+        book={selectedBook}
+      />
+
+      <EditBookDialog
+        open={isEditBookDialogOpen}
+        onOpenChange={setIsEditBookDialogOpen}
+        book={selectedBook}
+        onUpdateBook={handleUpdateBook}
+      />
+
+      <DeleteBookDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        book={selectedBook}
+        onDeleteBook={handleConfirmDelete}
       />
 
       <Card>
@@ -78,17 +161,7 @@ const BooksPage: React.FC = () => {
                         <TableCell>{book.price}</TableCell>
                         <TableCell>{book.stock}</TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700 hover:bg-red-50">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          {renderBookActions(book)}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -118,17 +191,7 @@ const BooksPage: React.FC = () => {
                         <TableCell>{book.price}</TableCell>
                         <TableCell>{book.stock}</TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700 hover:bg-red-50">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          {renderBookActions(book)}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -158,17 +221,7 @@ const BooksPage: React.FC = () => {
                         <TableCell>{book.price}</TableCell>
                         <TableCell>{book.stock}</TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700 hover:bg-red-50">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          {renderBookActions(book)}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -198,17 +251,7 @@ const BooksPage: React.FC = () => {
                         <TableCell>{book.price}</TableCell>
                         <TableCell>{book.stock}</TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700 hover:bg-red-50">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          {renderBookActions(book)}
                         </TableCell>
                       </TableRow>
                     ))}
